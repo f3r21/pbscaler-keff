@@ -1,0 +1,112 @@
+# Smoke k3d — 2026-05-25
+#
+# Generado por harness/smoke_k3d.sh contra un cluster k3d local corriendo
+# Online Boutique (10 servicios). Valida la integración K8s de PBScaler-keff
+# sin Istio/Prometheus (smoke ligero). Ver REPRODUCING.md.
+
+## Phase 1: Static smoke (smoke_keff_init.py)
+
+    NAME                                     READY   STATUS    RESTARTS   AGE     IP          NODE                              NOMINATED NODE   READINESS GATES
+    adservice-596b464bcf-855w7               1/1     Running   0          3m17s   10.42.0.4   k3d-pbscaler-keff-test-agent-0    <none>           <none>
+    cartservice-7f98997fcd-hjl4w             1/1     Running   0          3m17s   10.42.2.3   k3d-pbscaler-keff-test-server-0   <none>           <none>
+    checkoutservice-6986f7f595-9dqp9         1/1     Running   0          3m17s   10.42.1.4   k3d-pbscaler-keff-test-agent-1    <none>           <none>
+    currencyservice-bc75bf4bc-bj8cj          1/1     Running   0          44s     10.42.2.9   k3d-pbscaler-keff-test-server-0   <none>           <none>
+    emailservice-9bdd96449-4tt4q             1/1     Running   0          3m17s   10.42.2.5   k3d-pbscaler-keff-test-server-0   <none>           <none>
+    frontend-66bf567776-wq89t                1/1     Running   0          3m16s   10.42.0.6   k3d-pbscaler-keff-test-agent-0    <none>           <none>
+    paymentservice-b988547b9-f9gqv           1/1     Running   0          44s     10.42.2.8   k3d-pbscaler-keff-test-server-0   <none>           <none>
+    productcatalogservice-575fb6b5c-jrftg    1/1     Running   0          3m16s   10.42.1.7   k3d-pbscaler-keff-test-agent-1    <none>           <none>
+    recommendationservice-76d4bcbb95-ltfhx   1/1     Running   0          3m16s   10.42.0.7   k3d-pbscaler-keff-test-agent-0    <none>           <none>
+    redis-cart-5d69499b44-7dfs5              1/1     Running   0          3m16s   10.42.2.7   k3d-pbscaler-keff-test-server-0   <none>           <none>
+    shippingservice-854d9fd9dc-dlfjt         1/1     Running   0          3m16s   10.42.1.8   k3d-pbscaler-keff-test-agent-1    <none>           <none>
+[smoke] cwd=/Users/99/2026-1/Proyecto de Final de Carrera II/codigo/pbscaler-keff/PBScaler
+[smoke] fork_root=/Users/99/2026-1/Proyecto de Final de Carrera II/codigo/pbscaler-keff/PBScaler
+[smoke] imports OK
+[smoke] Config: SLO=500ms, ns=online-boutique, keff(alpha=0.45, beta=0.45, lambda_csp=0.1, curve=step, t_cold entries=10)
+[smoke] PBScalerKeff init OK — 10 services discovered: ['adservice', 'cartservice', 'checkoutservice', 'currencyservice', 'emailservice', 'frontend', 'paymentservice', 'productcatalogservice', 'recommendationservice', 'shippingservice']
+[smoke] svc_counts: {'adservice': 1, 'cartservice': 1, 'checkoutservice': 1, 'currencyservice': 1, 'emailservice': 1, 'frontend': 1, 'paymentservice': 1, 'productcatalogservice': 1, 'recommendationservice': 1, 'redis-cart': 1, 'shippingservice': 1}
+[smoke] fetch_pod_states OK — 10 pods across 10 services
+          adservice: 1 pods (ready=1, warming=0)
+          cartservice: 1 pods (ready=1, warming=0)
+          checkoutservice: 1 pods (ready=1, warming=0)
+          currencyservice: 1 pods (ready=1, warming=0)
+          emailservice: 1 pods (ready=1, warming=0)
+          frontend: 1 pods (ready=1, warming=0)
+          paymentservice: 1 pods (ready=1, warming=0)
+          productcatalogservice: 1 pods (ready=1, warming=0)
+          recommendationservice: 1 pods (ready=1, warming=0)
+          shippingservice: 1 pods (ready=1, warming=0)
+[smoke] compute_keff across curves:
+
+## Per-service compute_keff across all curves
+
+          adservice: 1 pods (ready=1, warming=0)
+          cartservice: 1 pods (ready=1, warming=0)
+          checkoutservice: 1 pods (ready=1, warming=0)
+          currencyservice: 1 pods (ready=1, warming=0)
+          emailservice: 1 pods (ready=1, warming=0)
+          frontend: 1 pods (ready=1, warming=0)
+          paymentservice: 1 pods (ready=1, warming=0)
+          productcatalogservice: 1 pods (ready=1, warming=0)
+          recommendationservice: 1 pods (ready=1, warming=0)
+          shippingservice: 1 pods (ready=1, warming=0)
+          adservice (T_cold=60.0s):  step=1.00  linear=1.00  sigmoid=1.00
+          cartservice (T_cold=15.0s):  step=1.00  linear=1.00  sigmoid=1.00
+          checkoutservice (T_cold=2.0s):  step=1.00  linear=1.00  sigmoid=1.00
+          currencyservice (T_cold=5.0s):  step=1.00  linear=1.00  sigmoid=1.00
+          emailservice (T_cold=8.0s):  step=1.00  linear=1.00  sigmoid=1.00
+          frontend (T_cold=2.0s):  step=1.00  linear=1.00  sigmoid=1.00
+          paymentservice (T_cold=5.0s):  step=1.00  linear=1.00  sigmoid=1.00
+          productcatalogservice (T_cold=2.0s):  step=1.00  linear=1.00  sigmoid=1.00
+          recommendationservice (T_cold=8.0s):  step=1.00  linear=1.00  sigmoid=1.00
+          shippingservice (T_cold=2.0s):  step=1.00  linear=1.00  sigmoid=1.00
+
+## Phase 2: Dynamic smoke (smoke_keff_dynamic.py)
+
+Scales cartservice from 1 to 2 replicas. Polls k_eff every 1s under all
+three warmup curves to verify the trajectory. T_cold configured as 15s
+(C# .NET stack, per config.yaml).
+
+[dyn] target svc=cartservice, T_cold=15.0s (configured), poll every 1.0s for 60.0s
+[dyn] before scale: 1 pods, ready=1
+[dyn] scaling cartservice to 2 replicas
+[dyn]  t(s)  pods  ready    step  linear  sigmoid
+[dyn]    0.0     2      1    1.00    1.04     1.00
+[dyn]    1.0     2      1    1.00    1.11     1.01
+[dyn]    2.1     2      1    1.00    1.18     1.03
+[dyn]    3.1     2      1    1.00    1.25     1.07
+[dyn]    4.1     2      1    1.00    1.32     1.14
+[dyn]    5.2     2      1    1.00    1.39     1.25
+[dyn]    6.2     2      1    1.00    1.46     1.40
+[dyn]    7.2     2      1    1.00    1.53     1.57
+[dyn]    8.3     2      1    1.00    1.60     1.73
+[dyn]    9.3     2      1    1.00    1.66     1.84
+[dyn]   10.3     2      1    1.00    1.73     1.92
+[dyn]   11.4     2      1    1.00    1.80     1.96
+[dyn]   12.4     2      1    1.00    1.87     1.98
+[dyn]   13.5     2      1    1.00    1.94     1.99
+[dyn]   14.5     2      1    2.00    2.00     2.00  <-- step jumps at T_cold
+[dyn]   15.5     2      1    2.00    2.00     2.00
+[dyn]   ...
+[dyn]   35.3     2      2    2.00    2.00     2.00  <-- pod becomes Ready
+[dyn] both pods ready at t=35.3s — stopping early
+[dyn] PASS — k_eff tracked the warmup event in real time
+
+## Observations
+
+1. step curve binary as expected: 1.00 until t=T_cold, jumps to 2.00.
+2. linear curve smooth ramp 1.04 -> 1.94 over [0, T_cold).
+3. sigmoid curve S-shape: slow start (1.07 at t=3), accelerates around
+   the midpoint (1.40 at t=6), saturates near T_cold (1.99 at t=13).
+4. All three converge to 2.00 at t >= T_cold.
+5. The actual K8s readiness probe success came at t=35.3s, more than 2x
+   the configured T_cold. This validates the need for profile_cold_start.py
+   to measure T_cold per service in the target cluster rather than relying
+   on literature-based estimates.
+
+## Bug found and fixed in this smoke
+
+f_sigmoid was reporting 2.01 at t > T_cold while step and linear correctly
+reported 2.00. The unclamped affine sigmoid keeps growing past 1.0 because
+the canonical sigmoid is unbounded. Fix committed as commit 63a6366: clamp
+f_sigmoid to [0, 1] for t outside [0, T_cold]. Two regression tests added
+to test_effective_capacity.py.

@@ -1,0 +1,56 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+*.egg-info/
+.venv/
+venv/
+
+# Environments and secrets
+.env
+.env.local
+*.env
+!.env.example
+!**/locustfile_*.py
+!**/.env.example
+secrets/
+*.key
+*.pem
+**/kubeconfig
+**/gke.env
+**/do.env
+**/tt.env
+
+# Experiment outputs (regeneratable, large)
+output/
+results/raw/
+results/sprint-*/
+**/results/raw/
+*.csv.gz
+
+# Trace datasets (re-download with prepare_alibaba_trace.py)
+benchmarks/online_boutique/data/batch_task.csv
+benchmarks/online_boutique/data/batch_task.tar.gz
+benchmarks/online_boutique/data/alibaba_60min_curve.csv
+
+# Trained models — keep the RF model required at runtime, ignore others
+*.pkl
+*.joblib
+!**/RandomForestClassify.model
+!**/simulation/boutique/*.model
+
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Build artefacts
+build/
+dist/
