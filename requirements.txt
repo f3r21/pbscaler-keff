@@ -1,0 +1,22 @@
+# PBScaler-keff — dependencias runtime (Python 3.11+). GA via pymoo.
+bayesian_optimization==1.2.0
+pymoo>=0.6.0
+ipython==8.11.0
+joblib==1.1.0
+kubernetes==23.3.0
+matplotlib==3.5.1
+more_itertools==8.12.0
+networkx==2.8.4
+numpy==1.22.2
+pandas==1.5.3
+requests==2.28.1
+schedule==1.1.0
+scikit_learn==1.2.1
+scikit_opt==0.6.6
+scipy==1.8.1
+seaborn==0.11.0
+simple_pid==1.0.1
+pyyaml>=6.0
+# Solo necesaria para correr los experimentos en cluster (generador de carga); el
+# análisis offline y los tests no la requieren.
+locust>=2.0

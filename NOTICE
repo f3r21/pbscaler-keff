@@ -1,0 +1,20 @@
+PBScaler-keff
+=============
+
+Este proyecto es un TRABAJO DERIVADO de PBScaler:
+
+    PBScaler — A Bottleneck-Aware Autoscaling Framework for Microservice-Based
+    Applications.  Copyright (c) 2023 WHU-AISE.  Licencia MIT (ver LICENSE).
+    https://github.com/WHU-AISE/PBScaler
+
+Modificaciones de esta tesis (PBScaler-keff, UCSP)
+----------------------------------------------------------
+Se añade un modelo de capacidad efectiva k_eff(t) consciente del arranque en frío,
+integrado en cuatro puntos del pipeline del autoescalador (Niveles 1-3 + bloqueo de
+scale-down durante el warmup), más el harness experimental, la instrumentación de
+modos de falla y el análisis. El detalle exacto de qué es contribución propia vs.
+código heredado está en CONTRIBUTIONS.md.
+
+El código original de PBScaler permanece bajo la licencia MIT de WHU-AISE, que se
+conserva sin cambios en el archivo LICENSE. Este trabajo derivado se distribuye bajo
+los mismos términos, preservando el copyright original.

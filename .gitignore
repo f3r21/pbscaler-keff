@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+*.egg-info/
+
+# OS / editor
+.DS_Store
+
+# Runtime / regeneratable
+output/
+*.bak
+
+# Secrets / local config — never commit your GCP project id (use gke.env.example)
+*.env
+harness/gke.env
+
+# Experiment results — raw data is not shipped in this code repo (see REPRODUCE.md)
+results/
+
+# Artefactos crudos pesados de experimentos (no versionados; ver REPRODUCE.md
+# y el tag 8645bb8 para la provenance completa)
+**/pbscaler.log
+**/locust_stats_history.csv
+
+# Smoke-gates desechables (celdas throwaway del smoke previo a cada sweep)
+results/smoke-throwaway/
+
+# Nota: autoscaler/simulation/boutique/RandomForestClassify.model SÍ se versiona
+# (el GA lo carga al arrancar; es parte del estado heredado de PBScaler).
